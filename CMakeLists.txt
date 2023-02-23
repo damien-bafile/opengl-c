@@ -1,20 +1,19 @@
-cmake_minimum_required(VERSION 3.18)
-project(openglC)
+cmake_minimum_required(VERSION 3.22)
+project(cmake_tutorial C)
 
 set(CMAKE_C_STANDARD 99)
 
 list(APPEND COMPILE_FILES
-    src/main.c
-)
+        main.c)
 
 option(BUILD_LIB_FREEGLUT "Build with FreeGLUT." ON)
 
 if(BUILD_LIB_FREEGLUT)
-    OPTION(FREEGLUT_BUILD_STATIC_LIBS "Build FreeGLUT static library." OFF)
-    OPTION(FREEGLUT_BUILD_SHARED_LIBS "Build FreeGLUT shared library." ON)
-    option(FREEGLUT_BUILD_DEMOS "Build FreeGLUT demos." OFF)
-    
-    add_subdirectory(lib/freeglut)
+    OPTION(FREEGLUT_BUILD_STATIC_LIBS "Build FreeGLUT static library." ON)
+    OPTION(FREEGLUT_BUILD_SHARED_LIBS "Build FreeGLUT shared library." OFF)
+    OPTION(FREEGLUT_BUILD_DEMOS "Build FreeGLUT demos." OFF)
+
+    add_subdirectory(./lib/freeglut)
     if (UNIX OR MINGW)
         target_compile_options(freeglut_static PRIVATE "-Wno-all")      # Remove annoying font unused values (in CMakeList line 305)
         target_compile_options(freeglut_static PRIVATE "-Wno-pedantic") # Remove annoying ISO C does not allow extra ';' outside of a function [-Wpedantic] (in CMakeList line 308)
@@ -35,7 +34,7 @@ elseif(UNIX OR APPLE)
 endif()
 
 add_executable(${PROJECT_NAME} ${BUILD_OPTIONS} ${COMPILE_FILES})
-target_link_libraries(${PROJECT_NAME} PRIVATE ${INCLUDE_LIBS})
+target_link_libraries(${PROJECT_NAME} PRIVATE ${INCLUDE_LIBS} ${OPENGL_LIBRARIES})
 target_include_directories(${PROJECT_NAME} PUBLIC ${INCLUDE_DIRS})
 
 if (UNIX OR MINGW)
